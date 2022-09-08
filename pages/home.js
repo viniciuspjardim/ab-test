@@ -17,21 +17,46 @@ export default function Home({ experience, serverTime }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <code style={{ fontSize: "22px" }} className={styles.main}>
-        Experience: {experience}
-        <br />
-        ServerTime: {serverTime}
-        <br />
-        ClientTime: {clientTime}
-        <br />
-      </code>
+      <main style={{ fontSize: "22px" }} className={styles.main}>
+        <div style={{ display: "flex", marginBottom: "16px" }}>
+          <a href="/experience-a/home">experience-a</a>
+          <span>&nbsp;|&nbsp;</span>
+          <a href="/experience-b/home">experience-b</a>
+        </div>
+
+        <code>
+          Experience: {experience}
+          <br />
+          ServerTime: {serverTime}
+          <br />
+          ClientTime: {clientTime}
+        </code>
+      </main>
     </div>
   );
 }
 
+/*
+ * The idea is to "trick" the Cloudflare cache two (or more) versions of
+ * the same page. For a regular page with A/B test we would have 3 possible
+ * URLs. /page-name, /experience-a/page-name, /experience-b/page-name.
+ *
+ * Cloudflare would have 3 cached pages. It would point to one of each
+ * depending on a cookie or if no cookie is set, it will flip a coin to
+ * chose one.
+ *
+ * Next.js middleware is responsible to remove the /experience-<a | b> from
+ * the page route and use it as a cookie instead. We can read this cookie
+ * in the getServerSideProps and we will know in which version we are all
+ * the way from the server. Then we can pass it down as a prop, create a
+ * context, etc.
+ */
+
 export async function getServerSideProps({ req }) {
   console.log("==== req.cookies ====\n", req.cookies);
 
+  // Get the experience from the middleware or from the cookie.
+  // If none is set we can set a default value.
   const experience = req?.cookies?.experience ?? "none";
 
   return {

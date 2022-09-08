@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export function middleware(request) {
   console.log("==== Middleware ====", request.url);
 
-  const response = NextResponse.rewrite(new URL("/home", request.url));
+  const response = NextResponse.redirect(new URL("/home", request.url));
 
   if (request.nextUrl.pathname.startsWith("/experience-a")) {
     response.cookies.set("experience", "var_A");
