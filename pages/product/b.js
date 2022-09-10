@@ -1,16 +1,19 @@
-export default function ProductB() {
-  return <p>Product B loading...</p>;
+import Product from "../../components/Product";
+
+export default function ProductPageB({ experience, serverTime, nonce }) {
+  return (
+    <Product experience={experience} serverTime={serverTime} nonce={nonce} />
+  );
 }
 
-export async function getServerSideProps({ req, res }) {
-  console.log("==== B ====");
-
-  res.setHeader("set-cookie", "experience=B");
+export async function getServerSideProps() {
+  console.log("==== Product B ====");
 
   return {
-    redirect: {
-      permanent: false,
-      destination: "/product",
+    props: {
+      experience: "B",
+      serverTime: new Date().toLocaleString("pt-BR"),
+      nonce: Math.floor(Math.random() * 1000000),
     },
   };
 }

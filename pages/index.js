@@ -1,13 +1,31 @@
+/*
+ * The idea is to make Cloudflare to cache two (or more) versions of
+ * the same page. For a regular page with A/B test we would have 2 possible
+ * URLs. /page-name and /page-name/b.
+ *
+ * Cloudflare would have 2 cached pages. It would point to one of each
+ * depending on a cookie or if no cookie is set, it will flip a coin to
+ * chose one.
+ *
+ * So already in the server code we have the experience we are in, depending
+ * only on the file we are. In the Cloudflare worker we will cache the two
+ * pages remove the /b (if we are in experience B) from the URL and set the
+ * cookies.
+ *
+ * Note: unfortunately AWS + serverless does not support Next.js middleware.
+ * The solution with it is way more elegant.
+ */
+
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 
-export default function Home({ serverTime }) {
+export default function Home({ serverTime, nonce }) {
   const [clientTime, setClientTime] = useState("");
 
   useEffect(() => {
-    setClientTime(new Date().toISOString());
+    setClientTime(new Date().toLocaleString("pt-BR"));
   }, []);
 
   return (
@@ -18,15 +36,10 @@ export default function Home({ serverTime }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main style={{ fontSize: "22px" }} className={styles.main}>
+      <main style={{ fontSize: "20px" }} className={styles.main}>
         <div style={{ display: "flex", marginBottom: "16px" }}>
           <Link href="/product">
             <a>product</a>
-          </Link>
-          <span>&nbsp;|&nbsp;</span>
-
-          <Link href="/product/a">
-            <a>product/a</a>
           </Link>
           <span>&nbsp;|&nbsp;</span>
 
@@ -42,13 +55,20 @@ export default function Home({ serverTime }) {
           <br />
           ClientTime: {clientTime}
         </code>
+
+        <p>{nonce}</p>
       </main>
     </div>
   );
 }
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps() {
+  console.log("==== Home ====");
+
   return {
-    props: { serverTime: new Date().toISOString() },
+    props: {
+      serverTime: new Date().toLocaleString("pt-BR"),
+      nonce: Math.floor(Math.random() * 1000000),
+    },
   };
 }
