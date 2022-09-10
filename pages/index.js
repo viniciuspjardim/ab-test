@@ -19,13 +19,14 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { brazilTimeString } from "../helpers/brazilTime";
 import styles from "../styles/Home.module.css";
 
 export default function Home({ serverTime, nonce }) {
   const [clientTime, setClientTime] = useState("");
 
   useEffect(() => {
-    setClientTime(new Date().toLocaleString("pt-BR"));
+    setClientTime(brazilTimeString());
   }, []);
 
   return (
@@ -67,7 +68,7 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      serverTime: new Date().toLocaleString("pt-BR"),
+      serverTime: brazilTimeString(),
       nonce: Math.floor(Math.random() * 1000000),
     },
   };

@@ -1,4 +1,5 @@
 import Product from "../../components/Product";
+import { brazilTimeString } from "../../helpers/brazilTime";
 
 export default function ProductPage({ experience, serverTime, nonce }) {
   return (
@@ -12,7 +13,7 @@ export async function getServerSideProps() {
   return {
     props: {
       experience: "A",
-      serverTime: new Date().toLocaleString("pt-BR"),
+      serverTime: brazilTimeString(),
       nonce: Math.floor(Math.random() * 1000000),
     },
   };
