@@ -20,17 +20,15 @@ export default function Home({ serverTime, nonce }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main style={{ fontSize: "20px" }} className={styles.main}>
+      <main className={styles.main}>
         <div style={{ display: "flex", marginBottom: "16px" }}>
           <Link href="/product">
-            <a>Product</a>
+            <a>Product {"<Link>"}</a>
           </Link>
+
           <span>&nbsp;|&nbsp;</span>
 
-          <a href="/product/a">Product A</a>
-          <span>&nbsp;|&nbsp;</span>
-
-          <a href="/product/b">Product B</a>
+          <a href="/product">Product {"<a>"}</a>
         </div>
 
         <code>
@@ -42,6 +40,16 @@ export default function Home({ serverTime, nonce }) {
         </code>
 
         <p>{nonce}</p>
+
+        <p className={styles.info}>
+          When you go to <code>/product</code>, Cloudflare is actually getting
+          the cached version from <code>/product/a</code> or{" "}
+          <code>/product/b</code> depending on the <code>experience</code>{" "}
+          cookie you have. If you don&apos;t have the cookie, it will set one
+          randomly.
+        </p>
+
+        <a href="https://github.com/viniciuspjardim/ab-test">GitHub</a>
       </main>
     </div>
   );
