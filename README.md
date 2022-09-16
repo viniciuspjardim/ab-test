@@ -1,4 +1,4 @@
-# A/B Test POC
+# A/B Test
 
 The goal of this proof of concept is to see how we can setup Next.js A/B tests
 on AWS Lambda with Cloudflare cache, but without giving up Next.js server side
@@ -8,19 +8,19 @@ rendering advantages.
 
 ## Details
 
-The idea is to make Cloudflare cache two versions of the same page. For
-a regular page with A/B test we would have 3 URLs - `/page-name`,
-`/page-name/a`, and `/page-name/b`. See the Cloudflare worker code
-[here](/cf-worker.js).
+The main ideia is to cache two versions of the same page in Cloudflare. This way
+we can have two experiences for it. A regular page with A/B test we would
+have 3 URLs - `/page-name`, `/page-name/a`, and `/page-name/b`.
 
 Cloudflare will have two cached versions of this page - the `/a` and `/b`.
 In this example, when you go to `/product`, Cloudflare is actually getting the
 cached version from `/product/a` or `/product/b` depending on the experience
 cookie you have. If you don't have the cookie, it will set one randomly.
 
-> I'll try to replace the `/a` and `/b` with a query parameter.
+> Please see the [Cloudflare Worker code](/cf-worker.js). In the future, I'll try
+to replace the `/a` and `/b` routes with a query parameter.
 
-When you reach `/product`, you will see that the *Experience* is either A or B.
+When you reach `/product`, you will see that the *Experience* is either *A* or *B*.
 And we get this value all the way from the server in `getServerSideProps`.
 Even disabling the JavaScript on the client is possible to see the experience,
 because it was server side rendered.
